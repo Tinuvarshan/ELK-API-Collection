@@ -1,0 +1,651 @@
+{
+  "info": {
+    "_postman_id": "25f9d229-037d-4f32-b912-5481d9712347",
+    "name": "ELK API Collection",
+    "description": "A centralized Postman collection for managing, validating, and monitoring APIs. Execution results are automatically sent to the ELK Stack for analysis and visualization.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56640017",
+    "_collection_link": "https://go.postman.co/collection/56640017-25f9d229-037d-4f32-b912-5481d9712347?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function(){\r",
+                  "\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"user_id\", jsonData.userId);\r",
+                  "\r",
+                  "pm.test(\"User created successfully\", function(){\r",
+                  "\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"User ID generated\", function(){\r",
+                  "\r",
+                  "    let data = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(data).to.have.property(\"userId\");\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\":\"test\",\r\n\"email\":\"ajay@test.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/users",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Create a new user and store details in MySQL database."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response is an array\", function(){\r",
+                  "\r",
+                  "    let data = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(data).to.be.an(\"array\");\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/users",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"User found\", function(){\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"User has ID\", function () {\r",
+                  "\r",
+                  "    let data = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(data.user.id).to.exist;\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Update successful\", function(){\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Update message received\", function(){\r",
+                  "\r",
+                  "    let data = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(data.message)\r",
+                  "    .to.eql(\"User updated successfully\");\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\":\"Ajay\",\r\n\"email\":\"ajay@test.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete successful\", function(){\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Delete message received\", function(){\r",
+                  "\r",
+                  "    let data = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(data.message)\r",
+                  "    .to.eql(\"User deleted successfully\");\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"name\":\"Ajay\",\r\n\"email\":\"ajay@test.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Management",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"customerName\":\"John\",\r\n    \"productName\":\"Laptop\",\r\n    \"amount\":50000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/orders",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/orders",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/orders/2",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "orders",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"status\":\"DELIVERED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/orders/2/status",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "orders",
+                "2",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Version 1 APIs",
+      "item": [
+        {
+          "name": "V1 - Get User By ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"User found\", function(){\r",
+                  "\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"SLA Violation\", function () {\r",
+                  "\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://smell-brass-ppc-relatives.trycloudflare.com/api/v1/users/{{user_id}}",
+              "protocol": "https",
+              "host": [
+                "smell-brass-ppc-relatives",
+                "trycloudflare",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "⚠️ Deprecated APIs\n\nThis folder contains Version 1 (V1) API endpoints that are no longer actively maintained and have been deprecated. These endpoints are kept for reference and backward compatibility purposes only.\n\n**Current endpoints:**\n- **V1 - Get User By ID**: Retrieves a user by their ID via the legacy `/api/v1/users/:id` route.\n\n> **Note:** It is recommended to migrate to the latest API versions available in the User Management folder. Deprecated endpoints may be removed in future releases."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "const SLA_LIMIT = 500;\r",
+          "\r",
+          "let elkData = {\r",
+          "    apiName: pm.info.requestName,\r",
+          "    method: pm.request.method,\r",
+          "    apiUrl: pm.request.url.toString(),\r",
+          "    statusCode: pm.response.code,\r",
+          "    responseTime: pm.response.responseTime,\r",
+          "\r",
+          "    // Existing API Status\r",
+          "    status: pm.response.code < 400 ? \"PASS\" : \"FAIL\",\r",
+          "\r",
+          "    // New SLA Fields\r",
+          "    slaLimit: SLA_LIMIT,\r",
+          "    slaStatus: pm.response.responseTime < SLA_LIMIT ? \"PASS\" : \"FAIL\",\r",
+          "\r",
+          "    timestamp: new Date().toISOString()\r",
+          "};\r",
+          "\r",
+          "pm.sendRequest({\r",
+          "    url: \"https://career-queries-correct-tariff.trycloudflare.com\",\r",
+          "    method: \"POST\",\r",
+          "    header: {\r",
+          "        \"Content-Type\": \"application/json\"\r",
+          "    },\r",
+          "    body: {\r",
+          "        mode: \"raw\",\r",
+          "        raw: JSON.stringify(elkData)\r",
+          "    }\r",
+          "});"
+        ]
+      }
+    }
+  ]
+}
